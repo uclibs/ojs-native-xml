@@ -12,16 +12,17 @@ print("""
     |__/                                        
 
       """)
+
 # get imput file
 try:
     input_file = sys.argv[1]
 except IndexError:
-    input_file = input("Please type input filename with full path: ")
+    input_file = input("Please type input filename with full path and press enter: ")
 
 # get file dir
-galley_dir = input("Please type full file path for galleys: ")
+galley_dir = input("Please type full file path for galleys and press enter:
+: ")
 
-# get input filename
 
 # get output filename
 out_file = input('Please type output file name: ')
@@ -78,7 +79,7 @@ def submission_file(row):
         return f"""<submission_file xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" stage="proof" id="{article_count}" xsi:schemaLocation="http://pkp.sfu.ca native.xsd">
         <revision number="1" genre="Article Text" filename="{row.galley}" viewable="false" date_uploaded="2021-03-30" date_modified="2021-03-30" filesize="170067" filetype="application/pdf" uploader="ojsadmin">
           <name locale="en_US">ojsadmin,{row.galley}</name>
-          <href src="{file(row, galley_dir)}"></href>
+          <embed encoding="base64">{file(row, galley_dir)}</embed>
         </revision>
       </submission_file>
     """
@@ -94,6 +95,12 @@ def keywords(row):
         for i in row.keywords.split(','):
             keywords+=xml(i.strip())
         return f"""<keywords locale="en_US">{keywords}</keywords>"""
+
+def date_published(row):
+    return
+
+def last_modified(row):
+    return
 
 def publication(row):
     return f"""<publication xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" locale="en_US" version="1" status="3" primary_contact_id="1" url_path="" seq="3" date_published="2021-08-25" section_ref="{row.section}" access_status="0" xsi:schemaLocation="http://pkp.sfu.ca native.xsd">
@@ -125,10 +132,17 @@ def article_galley(row):
 def file(row, galley_dir):
     full_path = f'{galley_dir}/{row.galley}'.format(galley_dir, row.galley)
     if exists(full_path):
-        return full_path
+        return encode(full_path)
     else:
         print(f'File not found: {row.galley}')
         sys.exit()
+
+def encode(valid_full_path):
+    import base64
+    with open(valid_full_path, "rb") as pdf_file:
+        encoded_string = base64.b64encode(pdf_file.read())
+        
+    return encoded_string
 
 def issue():
     issue_title = input("Please input issue title and press enter: ")
@@ -183,7 +197,7 @@ def sections():
   </sections>
 """ 
 
-out = open('out.xml', 'w')
+out = open(out_file, 'w')
 out.write(f"""<?xml version="1.0" encoding="UTF-8"?>""")
 out.write(issue())
 out.write(""" <articles xmlns="http://pkp.sfu.ca" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pkp.sfu.ca native.xsd">
@@ -191,4 +205,3 @@ out.write(""" <articles xmlns="http://pkp.sfu.ca" xmlns:xsi="http://www.w3.org/2
 out.write('\n'.join(df.apply(convert_row, axis=1)))
 out.write("</articles></issue>")
 out.close()
-
