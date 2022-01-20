@@ -15,45 +15,45 @@ csv file format, comma-delimited, utf8 encoding
 Script prompts user to input these data points at run-time.
 
 * "Please input issue title and press enter: " 
-> Optional.
+  > Optional.
 
 * "Please input volume number and press enter: "
-> Required; must be integer
+  > Required; must be integer
 
 * "Please input issue number and press enter: "
-> Required; must be integer.
+  > Required; must be integer.
 
 * "Please input issue year and press enter: "
-> Required; Format YYYY
+  > Required; Format YYYY
 
 * "Please type output file name and press enter: "
-> Required; XML format; Enter full path to output file e.g. `/tmp/outputfile.xml`
+  > Required; XML format; Enter full path to output file e.g. `/tmp/outputfile.xml`
 
 * "Please type full file path for galleys and press enter: "
-> Required; PDF galley path/location e.g. `/tmp/Files`
+  > Required; PDF galley path/location e.g. `/tmp/Files`
 
 ## Fields
 
 * authors
-> Required; Format author name as` "last_name, first_name"`. Group multiple authors in one column and seperate with semicolon.
+  > Required; Format author name as` "last_name, first_name"`. Group multiple authors in one column and seperate with semicolon.
 
 * keywords
-> Optional; Group keywords in single column and seperate with commas.
+  > Optional; Group keywords in single column and seperate with commas.
 
 * title
-> Required.
+  > Required.
 
 * abstract
-> Optional.
+  > Optional.
 
 * copyright
-> Optional.
+  > Optional.
 
 * galley
-> Name of file for upload, include name with extension e.g. "article_example1.pdf"
+  > Name of file for upload, include name with extension e.g. "article_example1.pdf"
 
 * section
-> Required; Use abbreviation codes e.g. "ART" for Article section.
+  > Required; Use abbreviation codes e.g. "ART" for Article section.
 
 
 ## Wrinkles
