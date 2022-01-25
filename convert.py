@@ -2,6 +2,7 @@ import pandas as pd
 from xml.sax.saxutils import escape
 from os.path import exists
 import sys
+import re
 
 print("""
        _                      _             _ _ 
@@ -20,8 +21,7 @@ except IndexError:
     input_file = input("Please type input filename with full path and press enter: ")
 
 # get file dir
-galley_dir = input("Please type full file path for galleys and press enter:
-: ")
+galley_dir = input("Please type full file path for galleys and press enter: ")
 
 
 # get output filename
@@ -58,8 +58,13 @@ def authors(row):
 			<email>visible.language.editor@gmail.com</email>
 		</author>"""
 
+    pattern = re.compile('[\w-]+\,\s[\w-]+;?\s?[\w-]*')
     if pd.isnull(row.authors):
-        return
+        print(f'Authors missing for row: {row}')
+        sys.exit()
+    elif not pattern.match(row.authors):
+        print(f'Check author formatting in {row}')
+        sys.exit()
     else: 
         # get row contents and parse into author xml entry
         a = [i.split(',') for i in row.authors.split(';')]
@@ -131,6 +136,9 @@ def article_galley(row):
 
 def file(row, galley_dir):
     full_path = f'{galley_dir}/{row.galley}'.format(galley_dir, row.galley)
+    if len(row.galley) > 127: 
+        print(f'File name too long: {row.galley}; must be shorter than 127 chars')
+        sys.exit()
     if exists(full_path):
         return encode(full_path)
     else:
@@ -140,7 +148,7 @@ def file(row, galley_dir):
 def encode(valid_full_path):
     import base64
     with open(valid_full_path, "rb") as pdf_file:
-        encoded_string = base64.b64encode(pdf_file.read())
+        encoded_string = base64.b64encode(pdf_file.read()).decode()
         
     return encoded_string
 
@@ -205,3 +213,4 @@ out.write(""" <articles xmlns="http://pkp.sfu.ca" xmlns:xsi="http://www.w3.org/2
 out.write('\n'.join(df.apply(convert_row, axis=1)))
 out.write("</articles></issue>")
 out.close()
+print(f'\n\nSUCCESS!! Check results @ {out_file}')
